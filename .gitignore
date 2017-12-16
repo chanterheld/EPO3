@@ -1,3 +1,7 @@
 *.bak
 *.mti
 *.mpf
+*.txt
+.gitignore
+VHDL/project/work/_info
+VHDL/project/transcript
