@@ -5,7 +5,7 @@ architecture behaviour of random is
 signal tap6 : std_logic;
 
 begin
-process (clk, reset, restart)
+process (clk)
 begin
 if (clk'event and clk = '1') then
 	if (reset = '1') then

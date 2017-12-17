@@ -5,6 +5,7 @@ architecture behaviour of mapgenerator is
 signal x0r0, x0r1, x0r2, x0r3, x0r4, x0r5, x0r6, x0r7, x1r0, x1r1, x1r2, x1r3, x1r4, x1r5, x1r6, x1r7: std_logic; --logic voor de rijen
 signal a0, a1, a2, a3, a4, a5 : std_logic;
 signal c0, c1, s1, s2, s3, s4 : std_logic;
+signal mux_in : std_logic_vector(2 downto 0);
 
 begin
 a5 <= address(5) xor seed(5);
@@ -38,42 +39,24 @@ x1r6 <= (not(a2) and a1) or (a2 and not(a1) and a0);
 x0r7 <= not(a0) or (not(a2) and a1);
 x1r7 <= a2 or not(a0);
 
-process(a5, a4, a3, clk)
-begin
-if (rising_edge(clk)) then
-	if (a5 = '0' and a4 = '0'  and a3 = '1') then 
-		c0 <= x1r1;
-		c1 <= x0r1;
+mux_in <= a5&a4&a3;
 
-	elsif (a5 = '0' and a4 = '1'  and a3 = '0') then
-		c0 <= x1r2;
-		c1 <= x0r2;
+c0 <= 	x1r1 when (mux_in = "001") else
+	x1r2 when (mux_in = "010") else
+	x1r3 when (mux_in = "011") else
+	x1r4 when (mux_in = "100") else
+	x1r5 when (mux_in = "101") else
+	x1r6 when (mux_in = "110") else
+	x1r0 when (mux_in = "000") else x1r7;
 
-	elsif (a5 = '0' and a4 = '1'  and a3 = '1') then
-		c0 <= x1r3;
-		c1 <= x0r3;
+c1 <= 	x0r1 when (mux_in = "001") else
+	x0r2 when (mux_in = "010") else
+	x0r3 when (mux_in = "011") else
+	x0r4 when (mux_in = "100") else
+	x0r5 when (mux_in = "101") else
+	x0r6 when (mux_in = "110") else
+	x0r0 when (mux_in = "000") else x0r7;
 
-	elsif (a5 = '1' and a4 = '0'  and a3 = '0') then
-		c0 <= x1r4;
-		c1 <= x0r4;
-
-	elsif (a5 = '1' and a4 = '0'  and a3 = '1') then
-		c0 <= x1r5;
-		c1 <= x0r5;
-
-	elsif (a5 = '1' and a4 = '1'  and a3 = '0') then
-		c0 <= x1r6;
-		c1 <= x0r6;
-
-	elsif (a5 = '0' and a4 = '0' and a3 = '0') then
-		c0 <= x1r0;
-		c1 <= x0r0;
-	else
-		c0 <= x1r7;
-		c1 <= x0r7;
-	end if;
-end if;
-end process;
 s1 <= (not address(2)) and seed(6);
 s2 <= (address(2) and seed(7)) and (address(0) or address(1));
 s3 <= (not address(5)) and seed(8);
