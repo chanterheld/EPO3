@@ -110,15 +110,15 @@ signal nr_adr_y : std_logic_vector(3 downto 0);
 signal block_size: std_logic_vector(4 downto 0);
 signal x_posi, y_posi : std_logic_vector(7 downto 0);
 begin
-l1: tr_sync port map(clk, reset, r_reset_x, r_reset_y, x_posi, y_posi, h_sync, v_sync);
-l5: xpos_to_blk_adr port map(clk, reset, r_reset_x, dip_sw, x_posi, block_size, blk_adr_x);
-l6: ypos_to_blk_adr port map(clk, reset, r_reset_y, dip_sw, y_posi, block_size, blk_adr_y, y_adr_up);
-l7: xpos_to_nr_adr port map(clk, reset, r_reset_x, game_d, x_posi, nr_adr_x);
-l8: ypos_to_nr_adr port map(clk, reset, r_reset_y, y_posi, nr_adr_y);
-l9: adr_to_colo_f port map(clk, reset, flag, y_adr_up, dip_sw, blk_adr_x, blk_adr_y, data_in, set_flag, e_n_field1, address, color_field);
-l10: adr_to_color_sc port map(clk, reset, game_rst, score_up, nr_adr_x, nr_adr_y, max, e_n_score, color_score);
-l11: rgb_decoder port map(e_n_field2, e_n_score, color_field, color_score, rgb);
-l12: dim_conv port map(dip_sw, block_size);
+l_tr_sync:		tr_sync port map(clk, reset, r_reset_x, r_reset_y, x_posi, y_posi, h_sync, v_sync);
+l_xpos_to_blk_adr: 	xpos_to_blk_adr port map(clk, reset, r_reset_x, dip_sw, x_posi, block_size, blk_adr_x);
+l_ypos_to_blk_adr: 	ypos_to_blk_adr port map(clk, reset, r_reset_y, dip_sw, y_posi, block_size, blk_adr_y, y_adr_up);
+l_xpos_to_nr_adr:	xpos_to_nr_adr port map(clk, reset, r_reset_x, game_d, x_posi, nr_adr_x);
+l_ypos_to_nr_adr:	ypos_to_nr_adr port map(clk, reset, r_reset_y, y_posi, nr_adr_y);
+l_adr_to_colo_f:	adr_to_colo_f port map(clk, reset, flag, y_adr_up, dip_sw, blk_adr_x, blk_adr_y, data_in, set_flag, e_n_field1, address, color_field);
+l_adr_to_color_sc:	adr_to_color_sc port map(clk, reset, game_rst, score_up, nr_adr_x, nr_adr_y, max, e_n_score, color_score);
+l_rgb_decoder:		rgb_decoder port map(e_n_field2, e_n_score, color_field, color_score, rgb);
+l_dim_conv: 		dim_conv port map(dip_sw, block_size);
 
 e_n_field2 <= e_n_field1 or game_rst or game_d;
 end structural;

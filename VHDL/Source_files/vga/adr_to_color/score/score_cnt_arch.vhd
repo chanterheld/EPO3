@@ -21,8 +21,8 @@ end component;
 signal ones_r, tens_r, ones_max: std_logic;
 signal ones_s: std_logic_vector(3 downto 0);
 begin
-l1: up_one_cnt_2 port map(clk, tens_r, ones_max, tens);
-l2: up_one_cnt_4 port map(clk, ones_r, plus_one, ones_s);
+l_tens: up_one_cnt_2 port map(clk, tens_r, ones_max, tens);
+l_ones: up_one_cnt_4 port map(clk, ones_r, plus_one, ones_s);
 
 ones_max <= ones_s(3) and ones_s(0) and plus_one;
 tens_r <= reset or game_rst; 

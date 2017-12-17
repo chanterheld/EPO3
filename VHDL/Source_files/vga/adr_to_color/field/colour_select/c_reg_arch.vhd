@@ -22,7 +22,7 @@ signal ff_out: std_logic_vector(13 downto 0);
 begin
 reg_gen:
 for i in 0 to 6 generate
-	ll_1: gated_reg_2 port map(clk, reset, we(i), write_bus, ff_out(2*i+1 downto 2*i));
-	ll_2: tr_buf_2 port map(ff_out(2*i+1 downto 2*i), re(i),read_bus);
+	l_reg: gated_reg_2 port map(clk, reset, we(i), write_bus, ff_out(2*i+1 downto 2*i));
+	l_tri: tr_buf_2 port map(ff_out(2*i+1 downto 2*i), re(i),read_bus);
 end generate ;
 end structural;

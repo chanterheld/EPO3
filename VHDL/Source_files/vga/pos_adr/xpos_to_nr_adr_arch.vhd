@@ -27,25 +27,20 @@ component gated_reg_8 is
 	);
 end component;
 
-component comp_8 is
-	port(	a	: in	std_logic_vector(7 downto 0);
-		b	: in	std_logic_vector(7 downto 0);
-		equal	: out	std_logic
-	);
-end component;
-
 signal pos_reg, pos_next, mplex_out, block_size, margin : std_logic_vector(7 downto 0);
 signal address_s: std_logic_vector(1 downto 0);
 signal comp_out, reg_nor, reg_load, reg_reset, cnt_reset, reset_s: std_logic;
 
 begin
+p_reg: gated_reg_8	port map(clk, reg_reset, reg_load, pos_next, pos_reg);
+adder: r_add_8		port map(pos_reg, mplex_out, pos_next);
+adr_reg: nr_cnt_x	port map(clk, reset_s, comp_out, cnt_reset, address_s);
+--comp
+comp_out <= 	'1' when (pos_reg = posi) else '0';
+reg_nor <= 	'1' when (pos_reg = "00000000") else '0';
+--mplex
 margin <= 	"00111100" when (game_d = '1') else "01111010";
 mplex_out <=	margin when (reg_nor = '1') else block_size;
-l3: gated_reg_8	port map(clk, reg_reset, reg_load, pos_next, pos_reg);
-l4: r_add_8	port map(pos_reg, mplex_out, pos_next);
-l5: comp_8	port map(pos_reg, posi, comp_out);
-reg_nor <= 	'1' when (pos_reg = "00000000") else '0';
-l7: nr_cnt_x	port map(clk, reset_s, comp_out, cnt_reset, address_s);
 
 reg_load <= comp_out or reg_nor;
 reg_reset <= reset_s or cnt_reset;

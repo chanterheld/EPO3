@@ -22,14 +22,6 @@ component one_adder_3 is
 	);
 end component;
 
-component mplex2t1_3 is 
-	port(	a	: in 	std_logic_vector(2 downto 0);
-		b	: in	std_logic_vector(2 downto 0);
-		sel	: in	std_logic;
-		q	: out	std_logic_vector(2 downto 0)
-	);
-end component;
-
 component gated_reg_3 is
 	port(	clk	: in	std_logic;
 		reset	: in 	std_logic;
@@ -42,13 +34,15 @@ end component;
 signal reg_s, adder_in, adder_out, nxt_row : std_logic_vector(2 downto 0);
 signal lb5, lst_blk, reg_r, reg_l: std_logic;
 begin
-l1: mplex2t1_3 port map(y_adr, reg_s, lb5, adder_in);
-l4: mplex2t1_3 port map(nxt_row, y_adr, lb5, reg_y);
-l2: one_adder_3 port map(adder_in, adder_out);
+l_adder: one_adder_3 port map(adder_in, adder_out);
+l_reg: gated_reg_3 port map(clk, reset, reg_l, nxt_row, reg_s);
+l_fsm: vga_reg_upd_fsm port map(clk, reset, flag, lst_blk, y_up, lb5, set_flag, write_en, reg_l);
+--mplex
+adder_in <= reg_s when (lb5 = '1') else y_adr;
+reg_y <= y_adr when (lb5 = '1') else nxt_row;
 nxt_row <= "001" when (lst_blk = '1') else adder_out;
+--comp
 lst_blk <= '1' when (adder_in = '1'&dip_sw) else '0';
-l7: gated_reg_3 port map(clk, reset, reg_l, nxt_row, reg_s);
-l10: vga_reg_upd_fsm port map(clk, reset, flag, lst_blk, y_up, lb5, set_flag, write_en, reg_l);
 
 reg_x <= reg_s;
 end architecture;

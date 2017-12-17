@@ -29,20 +29,14 @@ component vga_reg_upd is
 	);
 end component;
 
-component comp_3 is
-	port(	a	: in	std_logic_vector(2 downto 0);
-		b	: in	std_logic_vector(2 downto 0);
-		equal	: out	std_logic
-	);
-end component;
-
 signal wr_e, x_nor, y_nor: std_logic;
 signal reg_x, reg_y, wr_adr : std_logic_vector(2 downto 0);
 begin
-l1: color_sel port map(clk, reset, x_adr, wr_adr, data_in, wr_e, color);
-l2: vga_reg_upd port map(clk, reset, flag, dip_sw, y_adr,  y_up, set_flag, wr_e, reg_x, reg_y);
-x_nor <= '1' when (x_adr = "000") else '0'; --comp
-y_nor <= '1' when (y_adr = "000") else '0'; --comp
+l_clr_sel: color_sel port map(clk, reset, x_adr, wr_adr, data_in, wr_e, color);
+l_upd: vga_reg_upd port map(clk, reset, flag, dip_sw, y_adr,  y_up, set_flag, wr_e, reg_x, reg_y);
+--comp
+x_nor <= '1' when (x_adr = "000") else '0';
+y_nor <= '1' when (y_adr = "000") else '0';
 
 e_n <= x_nor or y_nor;
 wr_adr <= reg_x;

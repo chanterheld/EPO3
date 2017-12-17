@@ -29,24 +29,19 @@ component gated_reg_8 is
 	);
 end component;
 
-component comp_8 is
-	port(	a	: in	std_logic_vector(7 downto 0);
-		b	: in	std_logic_vector(7 downto 0);
-		equal	: out	std_logic
-	);
-end component;
-
 signal pos_reg, pos_next, mplex_resized : std_logic_vector(7 downto 0);
 signal mplex_out : std_logic_vector(4 downto 0);
 signal comp_out, reg_nor, reg_load, reg_reset, cnt_reset, reset_s: std_logic;
 
 begin
-mplex_out <=	"00101" when (reg_nor = '1') else block_size; --mplex
-l3: gated_reg_8	port map(clk, reg_reset, reg_load, pos_next, pos_reg);
-l4: r_add_8	port map(pos_reg, mplex_resized, pos_next);
-l5: comp_8	port map(pos_reg, posi, comp_out);
-reg_nor <=	'1' when (pos_reg = "00000000") else '0'; --comp
-l7: blk_cnt	port map(clk, reset_s, comp_out, dip_sw, cnt_reset, address);
+p_reg: gated_reg_8	port map(clk, reg_reset, reg_load, pos_next, pos_reg);
+adder: r_add_8		port map(pos_reg, mplex_resized, pos_next);
+adr_reg: blk_cnt	port map(clk, reset_s, comp_out, dip_sw, cnt_reset, address);
+ --comp
+reg_nor <=	'1' when (pos_reg = "00000000") else '0';
+comp_out <=	'1' when (pos_reg = posi) else '0';
+ --mplex
+mplex_out <=	"00101" when (reg_nor = '1') else block_size;
 
 mplex_resized <= "000"&mplex_out;
 reg_load <= comp_out or reg_nor;

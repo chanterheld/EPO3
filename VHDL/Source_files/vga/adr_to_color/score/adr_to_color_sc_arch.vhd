@@ -39,10 +39,11 @@ signal tens: std_logic_vector(1 downto 0);
 signal tens_resized, ones, bcd: std_logic_vector(3 downto 0);
 signal seg: std_logic_vector(12 downto 0);
 begin
-l1: score_cnt port map(clk, reset, game_rst, plus_one, tens, ones);
-l2: mplex2t1_4 port map(tens_resized, ones, y_adr(3), bcd);
-l3: bcd_to_seg port map(bcd, seg);
-l4: num_decoder port map(x_adr, y_adr(2 downto 0), seg, e_n);
+l_cnt: score_cnt port map(clk, reset, game_rst, plus_one, tens, ones);
+l_t_seg: bcd_to_seg port map(bcd, seg);
+l_deco: num_decoder port map(x_adr, y_adr(2 downto 0), seg, e_n);
+--mplex
+bcd <= ones when (y_adr(3) = '1') else tens_resized;
 
 tens_resized <= "00"&tens;
 color <= ones(2 downto 1);

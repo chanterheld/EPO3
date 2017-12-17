@@ -30,9 +30,9 @@ signal read_e: std_logic_vector(7 downto 0);
 signal write_e: std_logic_vector(6 downto 0);
 
 begin
-l1: c_reg port map(clk, reset, read_e(7 downto 1), write_e, wr_bus, clr_out);
-l2: decoder_3to7_e port map(wr_e, wr_adr, write_e);
-l3: decoder_3to8 port map(x_adr, read_e);
+l_creg: c_reg port map(clk, reset, read_e(7 downto 1), write_e, wr_bus, clr_out);
+l_wr_deco: decoder_3to7_e port map(wr_e, wr_adr, write_e);
+l_r_deco: decoder_3to8 port map(x_adr, read_e);
 
 
 end structural;

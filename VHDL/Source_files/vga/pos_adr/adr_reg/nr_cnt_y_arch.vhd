@@ -21,9 +21,10 @@ end component;
 signal reset_s, intrm_1, comp_out, nr_select  : std_logic;
 signal cnt_s : std_logic_vector(2 downto 0);
 begin
-l1: up_one_cnt_3	port map(clk, reset_s, up_one, cnt_s);
-comp_out <=		'1' when (cnt_s = "101") else '0'; --comp
-l3: t_ff		port map(clk, reset, intrm_1, nr_select);
+reg: up_one_cnt_3	port map(clk, reset_s, up_one, cnt_s);
+nr_sel: t_ff		port map(clk, reset, intrm_1, nr_select);
+ --comp
+comp_out <=		'1' when (cnt_s = "101") else '0';
 
 intrm_1 <= (comp_out and up_one);
 reset_s <= (intrm_1 or reset);
