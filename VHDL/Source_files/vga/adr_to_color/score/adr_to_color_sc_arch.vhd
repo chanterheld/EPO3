@@ -46,4 +46,5 @@ l4: num_decoder port map(x_adr, y_adr(2 downto 0), seg, e_n);
 
 tens_resized <= "00"&tens;
 color <= ones(2 downto 1);
+max <= '1' when (tens = "11") else '0';
 end structural;

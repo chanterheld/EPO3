@@ -9,6 +9,7 @@ entity adr_to_color_sc is
 		x_adr	: in	std_logic_vector(1 downto 0);
 		y_adr	: in	std_logic_vector(3 downto 0);
 
+		max	: out	std_logic;
 		e_n	: out	std_logic;
 		color	: out	std_logic_vector(1 downto 0)
 		

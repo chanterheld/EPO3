@@ -7,9 +7,11 @@ entity vga_top_lvl is
 		game_rst: in	std_logic;
 		flag	: in	std_logic;
 		score_up: in	std_logic;
+		game_d	: in	std_logic;
 		dip_sw	: in	std_logic_vector(1 downto 0);
 		data_in	: in	std_logic_vector(1 downto 0);
 
+		max	: out	std_logic;
 		set_flag: out	std_logic;
 		h_sync	: out	std_logic;
 		v_sync	: out	std_logic;
