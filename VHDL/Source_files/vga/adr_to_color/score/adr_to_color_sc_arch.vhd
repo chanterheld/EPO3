@@ -42,7 +42,7 @@ begin
 l_cnt: score_cnt port map(clk, reset, game_rst, plus_one, tens, ones);
 l_t_seg: bcd_to_seg port map(bcd, seg);
 l_deco: num_decoder port map(x_adr, y_adr(2 downto 0), seg, e_n);
---mplex
+--mux
 bcd <= ones when (y_adr(3) = '1') else tens_resized;
 
 tens_resized <= "00"&tens;

@@ -37,7 +37,7 @@ begin
 l_adder: one_adder_3 port map(adder_in, adder_out);
 l_reg: gated_reg_3 port map(clk, reset, reg_l, nxt_row, reg_s);
 l_fsm: vga_reg_upd_fsm port map(clk, reset, flag, lst_blk, y_up, lb5, set_flag, write_en, reg_l);
---mplex
+--mux
 adder_in <= reg_s when (lb5 = '1') else y_adr;
 reg_y <= y_adr when (lb5 = '1') else nxt_row;
 nxt_row <= "001" when (lst_blk = '1') else adder_out;

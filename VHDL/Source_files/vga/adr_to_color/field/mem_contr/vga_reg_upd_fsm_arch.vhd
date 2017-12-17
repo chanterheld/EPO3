@@ -20,7 +20,7 @@ comb: process(state, flag, lst_blk, adr_up)
 begin
 next_state <= state;
 case state is
-	when idle =>
+	when idle =>			--wait for nex row
 		plex_sel <= '0';
 		set_flag <= '0';
 		reg_l <= '0';
@@ -30,7 +30,7 @@ case state is
 			write_en <= '1';
 		end if;
 
-	when load_set =>
+	when load_set =>		--load adress, set flag
 		plex_sel <= '1';
 		set_flag <= '1';
 		reg_l <= '1';
@@ -41,7 +41,7 @@ case state is
 			next_state <= flag_wait;
 		end if;
 
-	when flag_wait =>
+	when flag_wait =>		--wait for flag 0
 		plex_sel <= '1';
 		set_flag <= '0';
 		reg_l <= '0';
