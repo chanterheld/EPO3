@@ -52,11 +52,11 @@ signal adder_in, adder_out, x_reg, y_reg, x_out, y_out, edge_val : std_logic_vec
 signal lvl_interconnect, lvl_reset, lvl_up_s : std_logic;
 signal dip_sw_s : std_logic_vector(1 downto 0);
 begin
-l1: plus_minus_one port map(adder_in, adder_out, adder_sel);
+pmo: plus_minus_one port map(adder_in, adder_out, adder_sel);
 reg_x: gated_reg_3 port map (clk, x_r, x_l, x_out, x_reg);
 reg_y: gated_reg_3 port map (clk, y_r, y_l, y_out, y_reg);
 reg_d: gated_reg_1 port map(clk, d_r, d_l, done_t, done);
---mplex
+--mux
 x_out <=  adder_out when (x_ins = '1') else x_reg;
 y_out <=  adder_out when (y_ins = '1') else y_reg;
 adder_in <=  y_reg when (reg_sel = '1') else x_reg;
@@ -65,8 +65,8 @@ edge_val <= '1'&dip_sw_s when (adder_sel = '1') else "001";
 edge <= '1' when (edge_val = adder_in) else '0';
 hit <= '1' when (data_in = s_type&live_clr) else '0';
 --level
-l2: t_ff port map (clk, lvl_reset, lvl_interconnect, dip_sw_s(1));
-l3: up_cnt_cell port map(clk, lvl_reset, lvl_up_s, dip_sw_s(0), lvl_interconnect);
+l1: t_ff port map (clk, lvl_reset, lvl_interconnect, dip_sw_s(1));
+l2: up_cnt_cell port map(clk, lvl_reset, lvl_up_s, dip_sw_s(0), lvl_interconnect);
 --others 
 done_t <= done nor data_in(2);
 address <= x_out&y_out;
@@ -85,8 +85,7 @@ begin
 	end if;
 end process;
 
-
-comb: process(state, edge, update, flag, hit, done, game_rst)
+comb: process(state, edge, flag, hit, done, game_rst, max)
 begin
 	lvl_up_s <= '0';
 	game_end <= '0';
@@ -154,8 +153,10 @@ begin
 			if (edge = '1') then
 				y_r <= '1';
 				d_r <= '1';
-				if done = '0' then
+				if (done = '0') then
 					next_state <= map_done;
+				elsif (max = '1') then
+					next_state <= game_done;
 				end if;
 			else
 				y_r <= '0';
@@ -365,18 +366,19 @@ begin
 			s_type <= '-';
 			set_flag <= '0';
 			r_w <= '1';
-			next_state <= increment;
+			if (flag = '0') then
+				next_state <= increment;
+			end if;
 
 		when map_done =>
-			adder_sel <= '-';
-			reg_sel <= '-';
-			x_ins <= '-';
-			y_ins <= '-';
+			adder_sel <= '1';
+			reg_sel <= '1';
+			x_ins <= '0';
+			y_ins <= '1';
 			x_l <= '0';
-			y_l <= '0';
+			y_l <= '1';
 			d_l <= '0';
 			x_r <= '0';
-			y_r <= '0';
 			d_r <= '0';
 			s_type <= '-';
 			set_flag <= '0';
@@ -389,22 +391,24 @@ begin
 			end if;
 
 		when game_done =>
-			adder_sel <= '-';
+			adder_sel <= '1';
 			reg_sel <= '-';
-			x_ins <= '-';
-			y_ins <= '-';
-			x_l <= '0';
-			y_l <= '0';
-			d_l <= '0';
-			x_r <= '0';
-			y_r <= '0';
-			d_r <= '0';
+			x_ins <= '1';
+			y_ins <= '1';
+			x_l <= '1';
+			y_l <= '1';
+			d_l <= '1';
+			x_r <= '1';
+			y_r <= '1';
+			d_r <= '1';
 			s_type <= '-';
 			set_flag <= '0';
 			r_w <= '-';
 			game_end <= '1';
 			if (game_rst = '1') then
 				next_state <= increment;
+				x_r <= '0';
+				y_r <= '0';
 			end if;
 	end case;
 end process;

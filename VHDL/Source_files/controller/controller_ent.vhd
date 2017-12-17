@@ -5,7 +5,7 @@ entity controller is
 	port(	clk	: in	std_logic;
 		reset	: in	std_logic;
 		game_rst: in	std_logic;
-		update	: in	std_logic;
+		max	: in	std_logic;
 		flag	: in	std_logic;
 		live_clr: in	std_logic_vector(1 downto 0);
 		data_in	: in	std_logic_vector(2 downto 0);		
