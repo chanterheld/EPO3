@@ -1,24 +1,19 @@
 architecture structural of dnl_gated_reg_1 is
-component reg_1 is
-	port(	clk	: in	std_logic;
-		reset	: in 	std_logic;
-		t	: in	std_logic;
-		q	: out	std_logic
-	);
-end component;
-
-component mplex2t1_1 is 
-	port(	a	: in 	std_logic;
-		b	: in	std_logic;
-		sel	: in	std_logic;
-		q	: out	std_logic
-	);
-end component;
-
 signal plex_out, q_s, load: std_logic;
 begin
-l1: reg_1		port map(clk, reset, plex_out, q_s);
-l2: mplex2t1_1		port map(q_s, t, load, plex_out);
+process (clk)
+begin
+	if (rising_edge(clk)) then
+		if (reset = '1') then
+			q_s <= '0';
+		else
+			q_s <= plex_out;
+		end if;
+	end if;
+end process;
+--mux
+plex_out <= t when (load = '1') else q_s;
+
 load <= (load_1 nor load_2);
 q <= q_s;
 end structural;
