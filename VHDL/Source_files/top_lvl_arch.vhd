@@ -66,13 +66,14 @@ component vga_top_lvl is
 	);
 end component;
 
-signal press, max, ctrl_s_flag, vga_s_flag, ctrl_flag, vga_flag, lvl_up, game_end, r_w : std_logic;
+signal press, max, ctrl_s_flag, vga_s_flag, ctrl_flag, vga_flag, lvl_up, game_end, r_w, storage_rst : std_logic;
 signal enc_in, vga_data, dip_sw	: std_logic_vector(1 downto 0);
 signal ctrl_data : std_logic_vector(2 downto 0);
 signal ctrl_adr, vga_adr : std_logic_vector(5 downto 0);
 begin
 l_input_bf:	input_bf port map (clk, c_input, press, enc_in);
 l_controller:	controller port map(clk, reset, game_rst, max, ctrl_flag, enc_in, ctrl_data, lvl_up, dip_sw, game_end, ctrl_s_flag, r_w, ctrl_adr);
-l_storage:	storage_top_lvl port map(clk, reset, game_rst, vga_s_flag, ctrl_s_flag, r_w, enc_in, vga_adr, ctrl_adr, vga_flag, ctrl_flag, vga_data, ctrl_data);
+l_storage:	storage_top_lvl port map(clk, reset, storage_rst, vga_s_flag, ctrl_s_flag, r_w, enc_in, vga_adr, ctrl_adr, vga_flag, ctrl_flag, vga_data, ctrl_data);
 l_vga:		vga_top_lvl port map(clk, reset, game_rst, vga_flag, press, game_end, dip_sw, vga_data, max, vga_s_flag, h_sync, v_sync, rgb, vga_adr);
+storage_rst <= game_rst or lvl_up; 
 end structural;
