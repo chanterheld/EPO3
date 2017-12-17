@@ -6,7 +6,6 @@ entity dnl_gated_reg_1 is
 		reset	: in 	std_logic;
 		load_1	: in	std_logic;
 		load_2	: in	std_logic;
-		t	: in	std_logic;
 		q	: out	std_logic
 	);
 end dnl_gated_reg_1;

@@ -15,7 +15,7 @@ begin
 	end if;
 end process;
 --mux
-plex_out <= t when (load = '1') else q_s;
+plex_out <= load or q_s;
 
 load <= (load_1 nor load_2);
 q <= q_s;
