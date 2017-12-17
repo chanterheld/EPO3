@@ -1,3 +1,6 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
 architecture structural of dnl_gated_reg_1 is
 signal plex_out, q_s, load: std_logic;
 begin
