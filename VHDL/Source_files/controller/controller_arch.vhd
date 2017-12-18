@@ -284,6 +284,7 @@ begin
 			d_r <= '0';
 			s_type <= '1';
 			r_w <= '0';
+			set_flag <= '0';
 			if (flag = '0') then
 				if (hit = '1') then
 					next_state <= write_one;
@@ -328,6 +329,7 @@ begin
 			d_r <= '0';
 			s_type <= '1';
 			r_w <= '0';
+			set_flag <= '0';
 			if (flag = '0') then
 				if (hit = '1') then
 					next_state <= write_one;
@@ -379,10 +381,11 @@ begin
 			y_l <= '1';
 			d_l <= '0';
 			x_r <= '0';
+			y_r <= '0';
 			d_r <= '0';
 			s_type <= '-';
-			set_flag <= '0';
 			r_w <= '-';
+			set_flag <= '0';
 			if (dip_sw_s = "11") then
 				next_state <= game_done;
 			else
