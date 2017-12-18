@@ -68,7 +68,7 @@ hit <= '1' when (data_in = s_type&live_clr) else '0';
 l1: t_ff port map (clk, lvl_reset, lvl_interconnect, dip_sw_s(1));
 l2: up_cnt_cell port map(clk, lvl_reset, lvl_up_s, dip_sw_s(0), lvl_interconnect);
 --others 
-done_t <= done nor data_in(2);
+done_t <= not(done) nand data_in(2);
 address <= x_out&y_out;
 dip_sw <= dip_sw_s;
 lvl_reset <= reset or game_rst;
