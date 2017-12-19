@@ -11,6 +11,7 @@ component xpos_to_nr_adr is
 	port(	clk	: in	std_logic;
 		reset	: in	std_logic;
 		r_reset	: in	std_logic;
+		game_d	: in	std_logic;
 		posi	: in	std_logic_vector(7 downto 0);
 		address	: out	std_logic_vector(1 downto 0)
 	);
@@ -54,12 +55,27 @@ component dim_conv is
 	);
 end component;
 
+component xpos_to_adr is
+	port(	clk		: in	std_logic;
+		reset		: in	std_logic;
+		r_reset		: in	std_logic;
+		game_d		: in	std_logic;
+		dip_sw		: in	std_logic_vector(1 downto 0);
+		posi		: in	std_logic_vector(7 downto 0);
+		block_size	: in	std_logic_vector(4 downto 0);
+		address_field	: out	std_logic_vector(2 downto 0);
+		address_number	: out	std_logic_vector(1 downto 0)
+	);
+end component;
+
 signal posi  : std_logic_vector(7 downto 0);
-signal pos_gen, clk,reset, y_up : std_logic;
-signal dip_sw, xnr_adr: std_logic_vector(1 downto 0);
-signal xblk_adr, yblk_adr: std_logic_vector(2 downto 0);
+signal pos_gen, clk,reset, y_up, game_d, correct : std_logic;
+signal dip_sw, xnr_adr, xnr_adr_s: std_logic_vector(1 downto 0);
+signal xblk_adr, xblk_adr_s, yblk_adr: std_logic_vector(2 downto 0);
 signal ynr_adr: std_logic_vector(3 downto 0);
 signal block_size: std_logic_vector(4 downto 0);
+
+
 begin
 
 clk 	<=	'0' after 0 ns,
@@ -76,11 +92,15 @@ dip_sw <= 	"00" after 0 ns,
 		"10" after 30000 ns,
 		"11" after 45000 ns;
 
+game_d <=	'0' after 0 ns,
+		'1' after 60000 ns;
+
 L1: xpos_to_blk_adr port map(clk, reset, reset, dip_sw, posi, block_size, xblk_adr);
 L2: ypos_to_blk_adr port map(clk, reset, reset, dip_sw, posi, block_size, yblk_adr, y_up);
-L3: xpos_to_nr_adr port map(clk, reset, reset, posi, xnr_adr);
+L3: xpos_to_nr_adr port map(clk, reset, reset, game_d, posi, xnr_adr);
 L4: ypos_to_nr_adr port map(clk, reset, reset, posi, ynr_adr);
 L5: dim_conv port map(dip_sw, block_size);
+T6: xpos_to_adr port map(clk, reset, reset, game_d, dip_sw, posi, block_size, xblk_adr_s, xnr_adr_s);
 
 
 cnt: process (pos_gen)
@@ -96,5 +116,8 @@ begin
 
 posi <= std_logic_vector(to_unsigned(tmp,8));
 end process;
+
+correct <= '1' when  ((xblk_adr_s =xblk_adr) and (xnr_adr_s = xnr_adr)) else '0';
+
 
 end behav;
