@@ -38,7 +38,7 @@ begin
 end process;
 plex_out <= nxt_row when (reg_l = '1') else reg_x_s;
 
---plus one adder
+--plus one adder_3
 h_add_gen:
 for i in 0 to 1 generate
  	adder_out(i) <= (adder_in(i) xor add_interconnect(i));
@@ -51,6 +51,7 @@ adder_out(2) <= add_interconnect(2) xor adder_in(2);
 adder_in <= reg_x_s when (lb5 = '1') else y_adr;
 reg_y <= y_adr when (lb5 = '1') else nxt_row;
 nxt_row <= "001" when (lst_blk = '1') else adder_out;
+
 --comp
 lst_blk <= '1' when (adder_in = '1'&dip_sw) else '0';
 
