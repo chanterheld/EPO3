@@ -12,9 +12,11 @@ component vga_top_lvl is
 		game_rst: in	std_logic;
 		flag	: in	std_logic;
 		score_up: in	std_logic;
+		game_d	: in	std_logic;
 		dip_sw	: in	std_logic_vector(1 downto 0);
 		data_in	: in	std_logic_vector(1 downto 0);
 
+		max	: out	std_logic;
 		set_flag: out	std_logic;
 		h_sync	: out	std_logic;
 		v_sync	: out	std_logic;
@@ -24,14 +26,14 @@ component vga_top_lvl is
 end component;
 
 type color_type is (white, red, yellow, green, cyan, blue, magenta, black);
-signal clk, reset, flag, flag_next, score_up, set_flag, clr_flag, h_sync, v_sync : std_logic;
+signal clk, reset, flag, flag_next, score_up, set_flag, clr_flag, h_sync, v_sync, game_d, max : std_logic;
 signal dip_sw, data_in : std_logic_vector(1 downto 0);
 signal rgb : std_logic_vector(2 downto 0);
 signal address: std_logic_vector(5 downto 0);
 signal color, color_send : color_type;
 
 begin
-L1: vga_top_lvl port map(clk, reset, reset, flag, score_up, dip_sw, data_in, set_flag, h_sync, v_sync, rgb, address);
+L1: vga_top_lvl port map(clk, reset, reset, flag, score_up, game_d, dip_sw, data_in, max, set_flag, h_sync, v_sync, rgb, address);
 
 clk 	<= 	'1' after 0 ns,
          	'0' after 81380 ps when clk /= '0' else '1' after 81380 ps;
@@ -45,6 +47,8 @@ dip_sw <= 	"11" after 0 ns,
 		"00" after 50244612 ns;
 
 data_in <=	address(3)&address(0);
+
+game_d <= '0' after 0 ns;
 
 process(clk, v_sync)
 begin
