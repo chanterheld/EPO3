@@ -57,7 +57,8 @@ signal uo_f_interconnect, address_field_s : std_logic_vector(2 downto 0);
 signal nr_adr_max, reset_nr_adr_s, uo_nr_interconnect : std_logic;
 
 begin
---gated_reg_8 field
+--p_reg_f: gated_reg_8	port map(clk, reg_reset_f, reg_load_f, pos_next_f, pos_reg_f);		--field
+--gated reg 8 bit field
 process (clk)
 begin
 	if (rising_edge(clk)) then
@@ -70,7 +71,9 @@ begin
 end process;
 reg_plex_out_f <= pos_next_f when (reg_load_f = '1') else pos_reg_f;
 
---gated_reg_8 nr
+
+--p_reg_nr: gated_reg_8	port map(clk, reg_reset_nr, reg_load_nr, pos_next_nr, pos_reg_nr);	--nr
+--gated reg 8 bit nr
 process (clk)
 begin
 	if (rising_edge(clk)) then
@@ -84,7 +87,7 @@ end process;
 reg_plex_out_nr <= pos_next_nr when (reg_load_nr = '1') else pos_reg_nr;
 
 --adder_f: r_add_8	port map(pos_reg_f, mplex_f_resized, pos_next_f);--field
---r_add_8 field
+--ripple adder 8 bit field
 h_add_f: h_add port map(pos_reg_f(0), mplex_f_resized(0), pos_next_f(0), f_add_interconnect(0));
 f_add_gen:
 for i in 0 to 5 generate
@@ -93,7 +96,7 @@ end generate;
 pos_next_f(7) <= (pos_reg_f(7) xor mplex_f_resized(7) xor f_add_interconnect(6));
 
 --adder_nr: r_add_8	port map(pos_reg_nr, mplex_out_nr, pos_next_nr);--nr
---r_add_8 nr
+--ripple adder 8 bit nr
 h_add_nr: h_add port map(pos_reg_nr(0), mplex_out_nr(0), pos_next_nr(0), nr_add_interconnect(0));
 nr_add_gen:
 for j in 0 to 5 generate
@@ -102,7 +105,7 @@ end generate;
 pos_next_nr(7) <= (pos_reg_nr(7) xor mplex_out_nr(7) xor nr_add_interconnect(6));
 
 --adr_reg_f: blk_cnt	port map(clk, reset_s, comp_out_f, dip_sw, cnt_reset_f, address_field);--field
---blk_cnt
+--address output register 3 bit field
 
 ---blk_reg: up_one_cnt_3	port map(clk, reset_f_adr_s, comp_out_f, address_field);
 ---entity up_one_cnt_3
@@ -120,7 +123,7 @@ reset_f_adr_s <= (cnt_reset_f or reset_s);
 address_field <= address_field_s;
 
 --adr_reg_nr: nr_cnt_x	port map(clk, reset_s, comp_out_nr, cnt_reset_nr, address_nr_s);--nr
---nr_cnt_x
+--address output register 3 bit nr
 
 ---nr_reg: up_one_cnt_2	port map(clk, reset_nr_adr_s, comp_out_nr, address_nr_s);
 ---entity up_one_cnt_2
