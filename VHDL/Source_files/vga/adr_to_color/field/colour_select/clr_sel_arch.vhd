@@ -12,32 +12,19 @@ component gated_reg_2 is
 	);
 end component;
 
+component decoder_3to7_e is
+	port(	enable	: in	std_logic;
+		x	: in	std_logic_vector(2 downto 0);
+		y	: out	std_logic_vector(6 downto 0)
+	);
+end component;
+
 signal read_e: std_logic_vector(7 downto 0);
 signal write_e: std_logic_vector(6 downto 0);
 signal ff_out: std_logic_vector(13 downto 0);
 
 begin
---l_wr_deco: decoder_3to7_e port map(wr_e, wr_adr, write_e);
---decoder with enable
-process(wr_adr, wr_e)
-begin
-	if (wr_e = '1') then
-		write_e <= (others => '0');    
-		case wr_adr is
-			when "001" => write_e(0) <= '1';
-			when "010" => write_e(1) <= '1';
-			when "011" => write_e(2) <= '1';
-			when "100" => write_e(3) <= '1';
-			when "101" => write_e(4) <= '1';
-			when "110" => write_e(5) <= '1';
-			when "111" => write_e(6) <= '1';
-			when others => write_e <= (others => '0');
-			end case;
-	else 
-		write_e <= (others => '0');
-	end if;
-end process;
---
+l_wr_deco: decoder_3to7_e port map(wr_e, wr_adr, write_e);
 
 reg_gen:
 for i in 0 to 6 generate
