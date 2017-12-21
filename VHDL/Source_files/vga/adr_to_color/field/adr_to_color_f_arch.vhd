@@ -31,6 +31,10 @@ end component;
 
 signal wr_e, x_nor, y_nor: std_logic;
 signal reg_x, reg_y, wr_adr : std_logic_vector(2 downto 0);
+
+--for l_upd: vga_reg_upd use entity work.vga_reg_upd(structural);
+for l_upd: vga_reg_upd use entity work.vga_reg_upd(structural2);
+
 begin
 l_clr_sel: color_sel port map(clk, reset, x_adr, wr_adr, data_in, wr_e, color);
 l_upd: vga_reg_upd port map(clk, reset, flag, dip_sw, y_adr,  y_up, set_flag, wr_e, reg_x, reg_y);
