@@ -50,12 +50,12 @@ component h_latch is
 	);
 end component;
 
-component rng is
-port (	clk	: in std_logic;
-	reset	: in std_logic;
-	restart	: in std_logic;
-	address	: in std_logic_vector(5 downto 0);
-	color	: out std_logic_vector(1 downto 0)
+component randomblock is
+port (	clk : in std_logic;
+	reset : in std_logic;
+	restart : in std_logic;
+	address : in std_logic_vector(5 downto 0);
+	color: out std_logic_vector(1 downto 0)
 );
 end component;
 
@@ -73,7 +73,7 @@ freg_3: flag_reg_3 port map(clk, reset, ctrl_s_fl, ctrl_clr_flag, cntrl_data_in,
 hlatch: h_latch port map(vga_flag_s, fsm_out, input_sel);
 --seed_gen: random port map(clk, reset, game_rst, seed);
 --map_gen: mapgenerator port map(read_adr, seed, rng_color);
-l_rng: rng port map(clk, reset, game_rst, read_adr, rng_color);
+l_rng: randomblock port map(clk, reset, game_rst, read_adr, rng_color);
 --mplex
 read_adr <= vga_adr when (input_sel = '1') else ctlr_adr;
 write_adr <= ctlr_adr when (fal_write = '1') else "000000";
