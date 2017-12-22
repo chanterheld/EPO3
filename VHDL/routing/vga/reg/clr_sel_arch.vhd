@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 
 architecture structural of color_sel is
 
-component gated_reg_2 is
+component stk_gated_reg_2 is
 	port(	clk	: in	std_logic;
 		reset	: in 	std_logic;
 		load	: in	std_logic;
@@ -28,7 +28,7 @@ l_wr_deco: decoder_3to7_e port map(wr_e, wr_adr, write_e);
 
 reg_gen:
 for i in 0 to 6 generate
-	l_reg: gated_reg_2 port map(clk, reset, write_e(i), wr_bus, ff_out(2*i+1 downto 2*i));
+	l_reg: stk_gated_reg_2 port map(clk, reset, write_e(i), wr_bus, ff_out(2*i+1 downto 2*i));
 end generate ;
 --mux
 clr_out <=	ff_out(1 downto 0) when (x_adr = "001") else

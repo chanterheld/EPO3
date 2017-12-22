@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
  
-architecture structural of gated_reg_2 is
+architecture structural of stk_gated_reg_2 is
 signal plex_out, q_s: std_logic_vector(1 downto 0);
 begin
 process (clk)
