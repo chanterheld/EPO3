@@ -10,7 +10,6 @@ entity vga_reg_upd_fsm is
 
 		plex_sel: out	std_logic;
 		set_flag: out	std_logic;
-		write_en: out	std_logic;
-		reg_l	: out	std_logic
+		write_en: out	std_logic
 	);
 end entity vga_reg_upd_fsm;

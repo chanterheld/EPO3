@@ -23,7 +23,6 @@ case state is
 	when idle =>			--wait for nex row
 		plex_sel <= '0';
 		set_flag <= '0';
-		reg_l <= '0';
 		write_en <= '0';
 		if ((adr_up = '1') and (lst_blk = '0')) then
 			next_state <= load_set;
@@ -33,7 +32,6 @@ case state is
 	when load_set =>		--load adress, set flag
 		plex_sel <= '1';
 		set_flag <= '1';
-		reg_l <= '1';
 		write_en <= '0';
 		if (lst_blk = '1') then
 			next_state <= idle;
@@ -44,7 +42,6 @@ case state is
 	when flag_wait =>		--wait for flag 0
 		plex_sel <= '1';
 		set_flag <= '0';
-		reg_l <= '0';
 		write_en <= '1';
 		if (flag = '0') then
 			next_state <= load_set;
