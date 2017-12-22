@@ -13,14 +13,6 @@ component score_cnt is
 	);
 end component;
 
-component mplex2t1_4 is 
-	port(	a	: in 	std_logic_vector(3 downto 0);
-		b	: in	std_logic_vector(3 downto 0);
-		sel	: in	std_logic;
-		q	: out	std_logic_vector(3 downto 0)
-	);
-end component;
-
 component bcd_to_seg is
 	port(	bcd	: in	std_logic_vector(3 downto 0);
 		seg	: out	std_logic_vector(12 downto 0)
