@@ -34,8 +34,6 @@ end component;
 signal reg_x_s, adder_in, adder_out, nxt_row : std_logic_vector(2 downto 0);
 signal lb5, lst_blk, reg_r, reg_l: std_logic;
 
-signal add_interconnect : std_logic_vector(2 downto 0); 
-
 signal plex_out : std_logic_vector(2 downto 0);
 begin
 l_fsm: vga_reg_upd_fsm port map(clk, reset, flag, lst_blk, y_up, lb5, set_flag, write_en, reg_l);
