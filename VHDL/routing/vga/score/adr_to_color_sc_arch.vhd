@@ -38,6 +38,8 @@ l_deco: num_decoder port map(x_adr, y_adr(2 downto 0), seg, e_n);
 bcd <= ones when (y_adr(3) = '1') else tens_resized;
 
 tens_resized <= "00"&tens;
+
 color <= ones(2 downto 1);
+
 max <= '1' when (tens = "11") else '0';
 end structural;
