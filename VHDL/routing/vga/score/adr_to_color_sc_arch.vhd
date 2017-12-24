@@ -3,17 +3,6 @@ use ieee.std_logic_1164.all;
 
 
 architecture structural of adr_to_color_sc is
-component score_cnt is
-	port(	clk	: in	std_logic;
-		reset	: in	std_logic;
-		game_rst: in	std_logic;
-		plus_one: in	std_logic;
-		max	: out	std_logic;
-		tens	: out	std_logic_vector(1 downto 0);
-		ones	: out	std_logic_vector(3 downto 0)
-	);
-end component;
-
 component seg_1 is
 	port(	a	: in	std_logic;
 		b	: in	std_logic;
@@ -75,12 +64,11 @@ component seg_10 is
 	);
 end component;
 
-signal tens: std_logic_vector(1 downto 0);
-signal tens_resized, ones, bcd: std_logic_vector(3 downto 0);
+
+signal bcd: std_logic_vector(3 downto 0);
 signal mux_in : std_logic_vector(4 downto 0);
 signal seg: std_logic_vector(8 downto 0);
 begin
-l_cnt: score_cnt port map(clk, reset, game_rst, plus_one, max, tens, ones);
 
 seg(0) <= seg(1) and seg(2);
 l_seg_1 : seg_1 port map(bcd(0), bcd(1), bcd(2), bcd(3), seg(1));
@@ -114,10 +102,5 @@ begin
 end process;
 
 --mux
-bcd <= ones when (y_adr(3) = '1') else tens_resized;
-
-tens_resized <= "00"&tens;
-color <= ones(2 downto 1);
-
-
+bcd <= ones when (y_adr(3) = '1') else "00"&tens;
 end structural;

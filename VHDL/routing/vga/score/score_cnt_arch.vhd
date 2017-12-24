@@ -42,5 +42,4 @@ ones_r <= ones_max or tens_r;
 ones <= ones_s;
 tens <= tens_s;
 
-max <= '1' when (tens_s = "11") else '0';
 end structural;
