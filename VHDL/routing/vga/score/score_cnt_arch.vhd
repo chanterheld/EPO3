@@ -57,7 +57,7 @@ begin
  		if (ones_r = '1') then
 			ones_s(2 downto 0) <= (others => '0');
 		else
-			ones_s(0) <= uo4_int(0) xor ones_s(0);
+			ones_s(0) <= uo4_int(0)xor ones_s(0);
 			ones_s(1) <= uo4_int(1)xor ones_s(1);
 			ones_s(2) <= uo4_int(2)xor ones_s(2);
 		end if;
