@@ -2,24 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 architecture structural of score_cnt is
-
-component t_ff is
-	port(	clk	: in 	std_logic;
-		reset	: in 	std_logic;
-		t	: in 	std_logic;
-		q	: out 	std_logic
-	);
-end component;
-
-component up_cnt_cell is
-	port(	clk	: in 	std_logic;
-		reset	: in 	std_logic;
-		t	: in 	std_logic;
-		q	: out 	std_logic;
-		and_out	: out	std_logic
-	);	
-end component;
-
 signal ones_r, tens_r, ones_max, uo2_int: std_logic;
 signal tens_s :  std_logic_vector(1 downto 0);
 signal ones_s, uo4_int: std_logic_vector(3 downto 0);
