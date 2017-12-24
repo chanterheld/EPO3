@@ -100,7 +100,7 @@ uo_int(0) <= comp_out;
 ---
 adr_comp_out <=	'1' when (cnt_s = '1'&dip_sw) else '0';
 cnt_reset <= (adr_comp_out and comp_out);
-cnt_reset_s <= (cnt_reset or reset);
+cnt_reset_s <= (cnt_reset or reset_s);
 address <= cnt_s;
 --
 mplex_out <=	"00101" when (reg_nor = '1') else block_size;

@@ -73,7 +73,9 @@ reg_7: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(7), pos_reg(7));
 
 -- 5 + 8 = 8 bit ripple carry adder
 ha_o: h_add port map(pos_reg(0),mplex_out(0), pos_next(0), r_add_int(0));
-f_add_1: stk_f_add port map(pos_reg(1),mplex_out(1), r_add_int(0), pos_next(1), r_add_int(1));
+--f_add_1: stk_f_add port map(pos_reg(1),mplex_out(1), r_add_int(0), pos_next(1), r_add_int(1));
+pos_next(1) <= pos_reg(1) xnor r_add_int(0);
+r_add_int(1) <= pos_reg(1) or r_add_int(0);
 f_add_2: stk_f_add port map(pos_reg(2),mplex_out(2), r_add_int(1), pos_next(2), r_add_int(2));
 f_add_3: stk_f_add port map(pos_reg(3),mplex_out(3), r_add_int(2), pos_next(3), r_add_int(3));
 f_add_4: stk_f_add port map(pos_reg(4),mplex_out(4), r_add_int(3), pos_next(4), r_add_int(4));
@@ -98,7 +100,7 @@ uo_int(0) <= comp_out;
 ---
 adr_comp_out <=	'1' when (cnt_s = '1'&dip_sw) else '0';
 cnt_reset <= (adr_comp_out and comp_out);
-cnt_reset_s <= (cnt_reset or reset);
+cnt_reset_s <= (cnt_reset or reset_s);
 address <= cnt_s;
 --
 

@@ -60,6 +60,7 @@ signal mplex_out, block_size, margin : std_logic_vector(6 downto 0);
 
 signal comp_out, reg_nor, comp_out_l, reg_nor_l, comp_out_r, reg_nor_r : std_logic;
 signal r_add_int: std_logic_vector(6 downto 0);
+
 --adr_reg_signals
 signal adr_comp_out, adr_reset_s, uo_int : std_logic;
 
