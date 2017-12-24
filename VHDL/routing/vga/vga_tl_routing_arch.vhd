@@ -136,7 +136,11 @@ x_nor <=	'1' when (blk_adr_x = "000") else '0';
 y_nor <=	'1' when (blk_adr_y = "000") else '0';
 en_field <= x_nor or y_nor or game_d or game_rst;
 
+color_score <= ones(1 downto 0);
+
 max <= '1' when (tens = "11") else '0';
+
+
 
 address <= reg_x&reg_y;
 end structural;
