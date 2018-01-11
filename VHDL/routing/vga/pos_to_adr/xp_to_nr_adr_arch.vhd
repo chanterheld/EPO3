@@ -11,9 +11,9 @@ component gated_reg_1 is
 	);
 end component;
 
-component comp_nor_4 is
-   	port(	a       :in    std_logic_vector(3 downto 0);
-   		comp_s  :in    std_logic_vector(3 downto 0);
+component comp_nor_8 is
+   	port(	a       :in    std_logic_vector(7 downto 0);
+   		comp_s  :in    std_logic_vector(7 downto 0);
         	comp_out:out   std_logic;
         	nor_out :out   std_logic);
 end component;
@@ -55,14 +55,13 @@ end component;
 
 signal pos_reg, pos_next : std_logic_vector(7 downto 0);
 signal address_s: std_logic_vector(1 downto 0);
-signal reg_load, reg_reset, cnt_reset, reset_s: std_logic;
+signal reg_load, reg_reset, cnt_reset: std_logic;
 signal mplex_out, block_size, margin : std_logic_vector(6 downto 0);
 
-signal comp_out, reg_nor, comp_out_l, reg_nor_l, comp_out_r, reg_nor_r : std_logic;
+signal comp_out, reg_nor: std_logic;
 signal r_add_int: std_logic_vector(6 downto 0);
-
 --adr_reg_signals
-signal adr_comp_out, adr_reset_s, uo_int : std_logic;
+signal adr_comp_out, uo_int : std_logic;
 
 begin
 --p_reg: gated_reg_8	port map(clk, reg_reset, reg_load, pos_next, pos_reg);
@@ -76,10 +75,7 @@ reg_6: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(6), pos_reg(6));
 reg_7: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(7), pos_reg(7));
 
 --comp+nor
-l_comp: comp_nor_4 port map(pos_reg(3 downto 0), posi(3 downto 0), comp_out_l, reg_nor_l);
-r_comp: comp_nor_4 port map(pos_reg(7 downto 4), posi(7 downto 4), comp_out_r, reg_nor_r);
-comp_out <= comp_out_l and comp_out_r;
-reg_nor <= reg_nor_l and reg_nor_r;
+r_comp: comp_nor_8 port map(pos_reg(7 downto 0), posi(7 downto 0), comp_out, reg_nor);
 
 --adder: r_add_8		port map(pos_reg, mplex_out, pos_next);
 ha_o: h_add port map(pos_reg(0),mplex_out(0), pos_next(0), r_add_int(0));
@@ -94,23 +90,20 @@ pos_next(7) <= r_add_int(6) xor pos_reg(7);
 --2 bit counter/register
 --adr_reg: nr_cnt_x	port map(clk, reset_s, comp_out, cnt_reset, address_s);
 ---reg: up_one_cnt_2	port map(clk, adr_reset_s, comp_out, address_s);
-l2: t_ff port map(clk, adr_reset_s, uo_int, address_s(1));
-l3: up_cnt_cell port map(clk, adr_reset_s, comp_out, address_s(0), uo_int);
+l2: t_ff port map(clk, reg_reset, uo_int, address_s(1));
+l3: up_cnt_cell port map(clk, reg_reset, comp_out, address_s(0), uo_int);
 
 ---
 adr_comp_out <=	'1' when (address_s = "11") else '0';
 cnt_reset <= (adr_comp_out and comp_out);
-adr_reset_s <= (cnt_reset or reset_s);
 --
 
 margin <= 	"0111100" when (game_d = '1') else "1111010";
 mplex_out <=	margin when (reg_nor = '1') else block_size;
 
 reg_load <= comp_out or reg_nor;
-reg_reset <= reset_s or cnt_reset;
-reset_s <= reset or r_reset;
+reg_reset <= reset or r_reset or cnt_reset;
 address <= address_s;
 
 block_size <= "00"&address_s(0)&'0'&not(address_s(0))&"11";
 end architecture;
-

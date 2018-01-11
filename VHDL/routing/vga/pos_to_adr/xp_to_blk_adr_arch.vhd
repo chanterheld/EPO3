@@ -12,9 +12,9 @@ component gated_reg_1 is
 	);
 end component;
 
-component comp_nor_4 is
-   	port(	a       :in    std_logic_vector(3 downto 0);
-   		comp_s  :in    std_logic_vector(3 downto 0);
+component comp_nor_8 is
+   	port(	a       :in    std_logic_vector(7 downto 0);
+   		comp_s  :in    std_logic_vector(7 downto 0);
         	comp_out:out   std_logic;
         	nor_out :out   std_logic);
 end component;
@@ -56,8 +56,8 @@ end component;
 --
 signal pos_reg, pos_next : std_logic_vector(7 downto 0);
 signal mplex_out, block_size : std_logic_vector(4 downto 0);
-signal comp_out, reg_nor, comp_out_l, reg_nor_l, comp_out_r, reg_nor_r : std_logic;
-signal reg_load, reg_reset, cnt_reset, reset_s, cnt_reset_s, intrm, adr_comp_out: std_logic;
+signal comp_out, reg_nor : std_logic;
+signal reg_load, reg_reset, cnt_reset , intrm, adr_comp_out: std_logic;
 signal r_add_int: std_logic_vector(6 downto 0);
 signal cnt_s, uo_int : std_logic_vector(2 downto 0);
 
@@ -73,10 +73,7 @@ reg_6: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(6), pos_reg(6));
 reg_7: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(7), pos_reg(7));
 
 --comp + nor
-l_comp: comp_nor_4 port map(pos_reg(3 downto 0), posi(3 downto 0), comp_out_l, reg_nor_l);
-r_comp: comp_nor_4 port map(pos_reg(7 downto 4), posi(7 downto 4), comp_out_r, reg_nor_r);
-comp_out <= comp_out_l and comp_out_r;
-reg_nor <= reg_nor_l and reg_nor_r;
+comp_nor: comp_nor_8 port map(pos_reg(7 downto 0), posi(7 downto 0), comp_out, reg_nor);
 
 -- 5 + 8 = 8 bit adder
 ha_o: h_add port map(pos_reg(0),mplex_out(0), pos_next(0), r_add_int(0));
@@ -91,23 +88,21 @@ pos_next(7) <= r_add_int(6) xor pos_reg(7);
 --3 bit counter/register
 --adr_reg: blk_cnt	port map(clk, reset_s, comp_out, dip_sw, cnt_reset, address);
 ---reg: up_one_cnt_3	port map(clk, cnt_reset_s, comp_out, cnt_s);
-adr_2: t_ff port map(clk, cnt_reset_s, uo_int(2), cnt_s(2));
+adr_2: t_ff port map(clk, reg_reset, uo_int(2), cnt_s(2));
 ff_gen:
 for i in 0 to 1 generate
-	lx: up_cnt_cell port map(clk, cnt_reset_s, uo_int(i), cnt_s(i), uo_int(i+1));
+	lx: up_cnt_cell port map(clk, reg_reset, uo_int(i), cnt_s(i), uo_int(i+1));
 end generate;
 uo_int(0) <= comp_out;
 ---
 adr_comp_out <=	'1' when (cnt_s = '1'&dip_sw) else '0';
 cnt_reset <= (adr_comp_out and comp_out);
-cnt_reset_s <= (cnt_reset or reset_s);
 address <= cnt_s;
 --
 mplex_out <=	"00101" when (reg_nor = '1') else block_size;
 
 reg_load <= comp_out or reg_nor;
-reg_reset <= reset_s or cnt_reset;
-reset_s <= reset or r_reset;
+reg_reset <= reset or r_reset or cnt_reset;
 
 intrm <= (dip_sw(1) xnor dip_sw(0));
 block_size(4) <= dip_sw(1) nand dip_sw(0);

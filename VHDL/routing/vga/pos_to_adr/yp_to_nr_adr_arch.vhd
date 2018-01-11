@@ -11,9 +11,9 @@ component gated_reg_1 is
 	);
 end component;
 
-component comp_nor_4 is
-   	port(	a       :in    std_logic_vector(3 downto 0);
-   		comp_s  :in    std_logic_vector(3 downto 0);
+component comp_nor_8 is
+   	port(	a       :in    std_logic_vector(7 downto 0);
+   		comp_s  :in    std_logic_vector(7 downto 0);
         	comp_out:out   std_logic;
         	nor_out :out   std_logic);
 end component;
@@ -57,9 +57,8 @@ signal mplex_out, block_size: std_logic_vector (3 downto 0);
 signal address_s: std_logic_vector(3 downto 0);
 signal reg_load, reg_reset, cnt_reset, reset_s, intrm: std_logic;
 signal r_add_int: std_logic_vector(6 downto 0);
-signal comp_out, reg_nor, comp_out_l, reg_nor_l, comp_out_r, reg_nor_r: std_logic;
+signal comp_out, reg_nor: std_logic;
 
-signal r_reg_inv, posi_inv : std_logic_vector(3 downto 0);
 --adr_register signals
 signal adr_comp_out, adr_reset_s, nr_select, intrm_1 : std_logic;
 signal adr_cnt_s, uo3_int : std_logic_vector(2 downto 0);
@@ -76,26 +75,10 @@ reg_6: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(6), pos_reg(6));
 reg_7: gated_reg_1 port map(clk, reg_reset, reg_load, pos_next(7), pos_reg(7));
 
 --comp+nor
-l_comp: comp_nor_4 port map(pos_reg(3 downto 0), posi(3 downto 0), comp_out_l, reg_nor_l);
-
-r_reg_inv(0) <= pos_reg(7);
-r_reg_inv(1) <= pos_reg(6);
-r_reg_inv(2) <= pos_reg(5);
-r_reg_inv(3) <= pos_reg(4);
-
-posi_inv(0) <= posi(7);
-posi_inv(1) <= posi(6);
-posi_inv(2) <= posi(5);
-posi_inv(3) <= posi(4);
-
-r_comp: comp_nor_4 port map(r_reg_inv(3 downto 0), posi_inv(3 downto 0), comp_out_r, reg_nor_r);
-
-comp_out <= comp_out_l and comp_out_r;
-reg_nor <= reg_nor_l and reg_nor_r;
+comp_nor: comp_nor_8 port map(pos_reg(7 downto 0), posi(7 downto 0), comp_out, reg_nor);
 
 --8 + 4 = 8 bit adder
 --adder: r_add_8port map(pos_reg, mplex_resized, pos_next);
-
 ha_o: h_add port map(pos_reg(0),mplex_out(0), pos_next(0), r_add_int(0));
 f_add_1: stk_f_add port map(pos_reg(1),mplex_out(1), r_add_int(0), pos_next(1), r_add_int(1));
 f_add_2: stk_f_add port map(pos_reg(2),mplex_out(2), r_add_int(1), pos_next(2), r_add_int(2));
@@ -116,7 +99,9 @@ for i in 0 to 1 generate
 end generate;
 uo3_int(0) <= comp_out;
 ---
+
 nr_sel: t_ff		port map(clk, reset_s, intrm_1, nr_select);
+
 
 adr_comp_out <=	'1' when (adr_cnt_s = "101") else '0';
 intrm_1 <= (adr_comp_out and comp_out);
