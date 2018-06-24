@@ -38,12 +38,46 @@ component h_latch is
     );
 end component;
 
-component randomtop is
-port (    clk : in std_logic;
-    reset : in std_logic;
-    restart : in std_logic;
-    address : in std_logic_vector(5 downto 0);
-    color: out std_logic_vector(1 downto 0)
+--component randomtop is
+--port (    clk : in std_logic;
+--    reset : in std_logic;
+--    restart : in std_logic;
+--    address : in std_logic_vector(5 downto 0);
+--    color: out std_logic_vector(1 downto 0)
+--);
+--end component;
+
+component random is
+port (	clk : in std_logic;
+	restart : in std_logic;
+	reset : in std_logic;
+	seed : buffer std_logic_vector(9 downto 0)
+);
+end component;
+
+component addresscomb is
+port ( 	address : in std_logic_vector(5 downto 0);
+	seed : in std_logic_vector (9 downto 0);
+	a : out std_logic_vector ( 5 downto 0)
+);
+end component;
+
+component blockinvert is
+port ( 	address : in std_logic_vector(5 downto 0);
+	seed : in std_logic_vector (9 downto 0);
+	s : out std_logic_vector (3 downto 0)
+);
+end component;
+
+component rowselect1 is
+port ( 	a : in std_logic_vector(5 downto 0);
+	c1 : out std_logic
+);
+end component;
+
+component rowselect0 is
+port ( 	a : in std_logic_vector(5 downto 0);
+	c0 : out std_logic
 );
 end component;
 
@@ -87,6 +121,12 @@ signal seed : std_logic_vector(9 downto 0);
 
 signal x_adr_wr, y_adr_wr, x_adr_r, y_adr_r: std_logic_vector(2 downto 0);
 signal we_x, we_y, x_plex_out : std_logic_vector(6 downto 0);
+
+--randomtop internal signals
+signal sseed: std_logic_vector(9 downto 0) ;
+signal sa : std_logic_vector(5 downto 0);
+signal ss : std_logic_vector(3 downto 0);
+signal sc0, sc1 : std_logic;
 
 begin
 fsm: storage_fsm port map(clk, reset, a_flag, fsm_out);
@@ -134,7 +174,16 @@ cntr_fl_rst <= reset or ctrl_clr_flag;
 hlatch: h_latch port map(vga_flag_s, fsm_out, input_sel);
 --seed_gen: random port map(clk, reset, game_rst, seed);
 --map_gen: mapgenerator port map(read_adr, seed, rng_color);
-l_rng: randomtop port map(clk, reset, game_rst, read_adr, rng_color);
+
+--l_rng: randomtop port map(clk, reset, game_rst, read_adr, rng_color);
+lbl1: random port map (clk=>clk,restart=>game_rst,reset=>reset,seed=>sseed);
+lbl2: addresscomb port map (address=>read_adr,seed=>sseed,a=>sa);
+lbl3: blockinvert port map (address=>read_adr,seed=>sseed,s=>ss);
+lbl4: rowselect1 port map (a=>sa,c1=>sc1);
+lbl5: rowselect0 port map (a=>sa,c0=>sc0);
+
+rng_color(0) <= (((sc0 xor ss(0)) xor ss(1)) xor ss(2)) xor ss(3);
+rng_color(1) <= (((sc1 xor ss(0)) xor ss(1)) xor ss(2)) xor ss(3);
 
 
 --mplex
